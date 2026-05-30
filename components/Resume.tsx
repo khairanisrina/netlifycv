@@ -1,82 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-interface Experience {
-  pengalaman_id: number;
-  jabatan: string;
-  nama_perusahaan: string;
-  tahun_mulai: number;
-  tahun_selesai: number | null;
-  deskripsi: string;
-}
-
-interface Education {
-  pendidikan_id: number;
-  tingkat_gelar: string;
-  nama_gelar: string;
-  nama_institusi: string;
-  tahun_mulai: number;
-  tahun_selesai: number | null;
-  deskripsi: string;
-}
-
-interface Certificate {
-  sertifikat_id: number;
-  nama_sertifikasi: string;
-  tahun: number;
-}
+import { certificates, educations, experiences } from "@/lib/seed";
 
 export default function Resume() {
-  const [experiences, setExperiences] = useState<Experience[]>([]);
-  const [educations, setEducations] = useState<Education[]>([]);
-  const [certificates, setCertificates] = useState<Certificate[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  // --- NORMALISASI DATA API ---
-  const normalize = (data: any): any[] => {
-    if (!data) return [];
-    if (Array.isArray(data)) return data;
-    if (Array.isArray(data.data)) return data.data;
-
-    // Jika API balikin 1 object → jadikan array
-    return [data];
-  };
-
-  const fetchData = async () => {
-    try {
-      const [exp, edu, cert] = await Promise.all([
-        fetch("/api/pengalaman").then((r) => r.json()),
-        fetch("/api/pendidikan").then((r) => r.json()),
-        fetch("/api/sertifikat").then((r) => r.json()),
-      ]);
-
-      setExperiences(normalize(exp));
-      setEducations(normalize(edu));
-      setCertificates(normalize(cert));
-
-      setLoading(false);
-    } catch (err) {
-      console.error("Error Resume:", err);
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <section id="resume" data-aos="fade-up" className="resume section">
-        <div className="container section-title">
-          <h2>Resume</h2>
-          <p>Sedang memuat data resume...</p>
-        </div>
-      </section>
-    );
-  }
-
   return (
     <section id="resume" data-aos="fade-up" className="resume section">
       <div className="container section-title">
@@ -98,9 +24,7 @@ export default function Resume() {
               </div>
 
               <div className="experience-cards">
-                {experiences.length === 0 && (
-                <p>Belum ada data pengalaman.</p>
-                )}
+                {experiences.length === 0 && <p>Belum ada data pengalaman.</p>}
 
                 {experiences.map((exp, i) => (
                   <div key={exp.pengalaman_id} data-aos="fade-up" data-aos-delay={`${i * 80}`} className="exp-card">

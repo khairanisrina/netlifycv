@@ -1,15 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-interface PortfolioItem {
-  project_id: number;
-  nama_proyek: string;
-  kategori_proyek: string;
-  tahun_proyek: number;
-  deskripsi_proyek: string;
-  gambar_proyek_url: string;
-}
+import { portfolioItems } from "@/lib/seed";
 
 type FilterKey = "all" | "graphic" | "illustration" | "uiux" | "webdev";
 
@@ -22,28 +14,11 @@ const categories: { key: FilterKey; label: string }[] = [
 ];
 
 export default function Portfolio() {
-  const [items, setItems] = useState<PortfolioItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [items] = useState(portfolioItems);
   const [filter, setFilter] = useState<FilterKey>("all");
 
   const [showViewer, setShowViewer] = useState(false);
   const [currentIndex, setCurrentIndex] = useState<number | null>(null);
-
-  useEffect(() => {
-    const fetchPortfolio = async () => {
-      try {
-        const res = await fetch("/api/portfolio", { cache: "no-store" });
-        const json = await res.json();
-        setItems(Array.isArray(json) ? json : []);
-      } catch (err) {
-        console.error("Error fetching portfolio:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPortfolio();
-  }, []);
 
   const filtered =
     filter === "all"
@@ -73,18 +48,6 @@ export default function Portfolio() {
     if (currentIndex === null || filtered.length === 0) return;
     setCurrentIndex((currentIndex + 1) % filtered.length);
   };
-
-  if (loading) {
-    return (
-      <section id="portfolio" data-aos="zoom-in" className="portfolio section">
-        <div className="container section-title text-center">
-          <span className="subtitle">Portfolio</span>
-          <h2>Portfolio</h2>
-          <p>Sedang memuat data portfolio...</p>
-        </div>
-      </section>
-    );
-  }
 
   return (
   <section id="portfolio" data-aos="zoom-in" className="portfolio section">

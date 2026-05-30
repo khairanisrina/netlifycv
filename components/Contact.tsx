@@ -1,31 +1,28 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-
-interface Profile {
-  lokasi?: string;
-  telepon?: string;
-  email?: string;
-}
+import { FormEvent } from 'react';
+import { profile } from '@/lib/seed';
 
 export default function Contact() {
-  const [profile, setProfile] = useState<Profile>({});
-  const [loading, setLoading] = useState(true);
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
-  useEffect(() => {
-    fetchProfile();
-  }, []);
+    const formData = new FormData(event.currentTarget);
+    const name = String(formData.get('name') || '').trim();
+    const email = String(formData.get('email') || '').trim();
+    const subject = String(formData.get('subject') || '').trim();
+    const message = String(formData.get('message') || '').trim();
 
-  const fetchProfile = async () => {
-    try {
-      const res = await fetch('/api/profil');
-      const data = await res.json();
-      setProfile(data);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-      setLoading(false);
-    }
+    const mailSubject = subject || `Pesan dari ${name || 'pengunjung website'}`;
+    const mailBody = [
+      `Nama: ${name || '-'}`,
+      `Email: ${email || '-'}`,
+      '',
+      message || '-',
+    ].join('\n');
+
+    const mailtoLink = `mailto:${profile.email}?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
+    window.location.href = mailtoLink;
   };
 
   return (
@@ -39,45 +36,39 @@ export default function Contact() {
       <div className="container">
         <div className="row gy-4">
           <div className="col-lg-4">
-            {profile.lokasi && (
-              <div className="info-item">
-                <div className="icon-wrapper">
-                  <i className="bi bi-geo-alt"></i>
-                </div>
-                <div>
-                  <h3>Alamat</h3>
-                  <p>{profile.lokasi}</p>
-                </div>
+            <div className="info-item">
+              <div className="icon-wrapper">
+                <i className="bi bi-geo-alt"></i>
               </div>
-            )}
+              <div>
+                <h3>Alamat</h3>
+                <p>{profile.lokasi}</p>
+              </div>
+            </div>
 
-            {profile.telepon && (
-              <div className="info-item">
-                <div className="icon-wrapper">
-                  <i className="bi bi-telephone"></i>
-                </div>
-                <div>
-                  <h3>Telepon</h3>
-                  <p>{profile.telepon}</p>
-                </div>
+            <div className="info-item">
+              <div className="icon-wrapper">
+                <i className="bi bi-telephone"></i>
               </div>
-            )}
+              <div>
+                <h3>Telepon</h3>
+                <p>{profile.telepon}</p>
+              </div>
+            </div>
 
-            {profile.email && (
-              <div className="info-item">
-                <div className="icon-wrapper">
-                  <i className="bi bi-envelope"></i>
-                </div>
-                <div>
-                  <h3>Email</h3>
-                  <p>{profile.email}</p>
-                </div>
+            <div className="info-item">
+              <div className="icon-wrapper">
+                <i className="bi bi-envelope"></i>
               </div>
-            )}
+              <div>
+                <h3>Email</h3>
+                <p>{profile.email}</p>
+              </div>
+            </div>
           </div>
 
           <div className="col-lg-8">
-            <form action="/api/contact" method="POST" className="php-email-form">
+            <form onSubmit={handleSubmit} className="php-email-form">
               <div className="row gy-4">
                 <div className="col-md-6">
                   <input type="text" name="name" className="form-control" placeholder="Nama Anda" required />

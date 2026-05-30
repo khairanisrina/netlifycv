@@ -7,14 +7,7 @@ import { PerspectiveCamera } from '@react-three/drei';
 import { MathUtils } from 'three';
 import GradientText from '../Animations/GradientText';
 import Stack from '../Animations/Stack';
-
-interface Profile {
-  nama?: string;
-  sosial_twitter?: string;
-  sosial_facebook?: string;
-  sosial_instagram?: string;
-  sosial_linkedin?: string;
-}
+import { profile } from '@/lib/seed';
 
 type UniformValue = THREE.IUniform<unknown> | unknown;
 
@@ -385,25 +378,6 @@ const DirLight: FC<{ position: [number, number, number]; color: string }> = ({ p
 const BeamsExport = Beams;
 
 export default function Hero() {
-  const [profile, setProfile] = useState<Profile | null>(null);
-
-  useEffect(() => {
-    async function fetchProfile() {
-      try {
-        const res = await fetch('/api/profil');
-        if (!res.ok) return;
-        const data = await res.json();
-        let p: Profile | null = null;
-        if (Array.isArray(data)) p = data.length > 0 ? data[0] : null;
-        else p = data;
-        setProfile(p);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    fetchProfile();
-  }, []);
-
   // Measure header height and set CSS variable so hero centers exactly below the fixed header
   useEffect(() => {
     const setHeaderHeight = () => {
@@ -432,7 +406,7 @@ export default function Hero() {
     return () => window.removeEventListener('resize', updateStackSize);
   }, []);
 
-  const nama = profile?.nama || 'Khansa Nisrina';
+  const nama = profile.nama;
 
   return (
     <section
@@ -504,7 +478,7 @@ export default function Hero() {
 
           {/* Social Links */}
           <div className="flex justify-center gap-4 animate-zoom-in">
-            {profile?.sosial_twitter && (
+            {profile.sosial_twitter && (
               <a
                 href={profile.sosial_twitter}
                 target="_blank"
@@ -514,7 +488,7 @@ export default function Hero() {
                 <i className="bi bi-twitter-x text-xl"></i>
               </a>
             )}
-            {profile?.sosial_facebook && (
+            {profile.sosial_facebook && (
               <a
                 href={profile.sosial_facebook}
                 target="_blank"
@@ -524,7 +498,7 @@ export default function Hero() {
                 <i className="bi bi-facebook text-xl"></i>
               </a>
             )}
-            {profile?.sosial_instagram && (
+            {profile.sosial_instagram && (
               <a
                 href={profile.sosial_instagram}
                 target="_blank"
@@ -534,7 +508,7 @@ export default function Hero() {
                 <i className="bi bi-instagram text-xl"></i>
               </a>
             )}
-            {profile?.sosial_linkedin && (
+            {profile.sosial_linkedin && (
               <a
                 href={profile.sosial_linkedin}
                 target="_blank"

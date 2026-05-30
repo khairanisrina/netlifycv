@@ -1,59 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-interface Service {
-  layanan_id: number;
-  nama_layanan: string;
-  deskripsi_layanan: string;
-  ikon_layanan: string;
-  link_layanan: string | null;
-  featured: number; 
-}
+import { services } from "@/lib/seed";
 
 export default function Services() {
-  const [services, setServices] = useState<Service[]>([]);
-  const [loading, setLoading] = useState(true);
-
-
-  const normalize = (data: any): Service[] => {
-    if (!data) return [];
-    if (Array.isArray(data)) return data as Service[];
-    if (Array.isArray(data.data)) return data.data as Service[];
-    return [data as Service];
-  };
-
-  useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        const res = await fetch("/api/layanan");
-        const json = await res.json();
-        const normalized = normalize(json);
-        setServices(normalized);
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching services:", err);
-        setLoading(false);
-      }
-    };
-
-    fetchServices();
-  }, []);
-
-  if (loading) {
-    return (
-      <section id="services" data-aos="fade-left" className="services section">
-        <div className="container section-title">
-          <span className="subtitle">Services</span>
-          <h2>Layanan Saya</h2>
-          <p>Sedang memuat data layanan...</p>
-        </div>
-      </section>
-    );
-  }
-
-  const safeServices = Array.isArray(services) ? services : [];
-
   return (
     <section id="services" data-aos="fade-left" className="services section">
       <div className="container section-title">
@@ -67,11 +16,9 @@ export default function Services() {
 
       <div className="container">
         <div className="row gy-4">
-          {safeServices.length === 0 && (
-            <p>Belum ada data layanan yang tersedia.</p>
-          )}
+          {services.length === 0 && <p>Belum ada data layanan yang tersedia.</p>}
 
-          {safeServices.map((service, index) => (
+          {services.map((service, index) => (
             <div key={service.layanan_id} className="col-lg-3 col-md-6">
               <div
                 data-aos="fade-up"
