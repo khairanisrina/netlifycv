@@ -88,7 +88,7 @@ export const profile: Profile = {
   pendidikan: "S1 Teknik Informatika - UMMI",
   lokasi: "Sukabumi, Jawa Barat",
   email: "khairanisrina@gmail.com",
-  telepon: "+6281946824832",
+  telepon: "+6287814355110",
   ketersediaan: "Terbuka untuk magang, proyek freelance, dan kolaborasi kreatif.",
   foto_profil_url: "/assets/img/profile/bubub.jpg",
   sosial_twitter: "",
